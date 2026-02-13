@@ -2,209 +2,395 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Pricing & Discount Pressure Checker</title>
+  <title>Pricing Pressure & Discount Lab</title>
   <style>
-    body { font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif; margin: 20px; line-height: 1.5; }
-    h1, h2 { margin-bottom: 0.2rem; }
-    .section { border: 1px solid #ddd; padding: 16px; margin-bottom: 16px; border-radius: 6px; }
-    label { display: block; margin: 6px 0 2px; font-weight: 500; }
-    select, input[type="number"], textarea { width: 100%; padding: 6px; margin-bottom: 8px; }
-    .note { font-size: 0.85rem; color: #555; }
-    .result { padding: 10px; border-radius: 6px; margin-top: 10px; white-space: pre-line; }
-    .low { background: #e1f7e7; border: 1px solid #b6e2c5; }
-    .medium { background: #fff4e5; border: 1px solid #f3c58b; }
-    .high { background: #fde4e4; border: 1px solid #f0aaaa; }
-    button { padding: 8px 14px; cursor: pointer; border-radius: 4px; border: 1px solid #555; background: #fff; }
+    :root {
+      --rr-bg: #fdf7f8;
+      --rr-surface: #ffffff;
+      --rr-border: #f0d6dc;
+      --rr-accent: #c94a6f;
+      --rr-accent-soft: #fbe1ea;
+      --rr-text-main: #2a1a1f;
+      --rr-text-soft: #6b4b57;
+      --rr-warn: #f8b84a;
+      --rr-warn-soft: #fff4e2;
+      --rr-safe: #3b7c4a;
+      --rr-safe-soft: #e1f6e7;
+      --rr-risk: #c0392b;
+      --rr-risk-soft: #fde4e4;
+    }
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+      margin: 0;
+      padding: 24px;
+      background: var(--rr-bg);
+      color: var(--rr-text-main);
+      line-height: 1.5;
+    }
+    h1, h2, h3 {
+      margin-top: 0;
+    }
+    h1 {
+      font-size: 1.6rem;
+      margin-bottom: 0.25rem;
+    }
+    h2 {
+      font-size: 1.2rem;
+      margin-bottom: 0.25rem;
+    }
+    h3 {
+      font-size: 1rem;
+      margin-bottom: 0.15rem;
+    }
+    p {
+      margin: 0 0 0.4rem;
+    }
+    .shell {
+      max-width: 880px;
+      margin: 0 auto;
+      background: var(--rr-surface);
+      border-radius: 10px;
+      border: 1px solid var(--rr-border);
+      padding: 18px 18px 24px;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.03);
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.75rem;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+    }
+    .badge-lab {
+      background: var(--rr-accent-soft);
+      color: var(--rr-accent);
+    }
+    .ready-alert {
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin: 10px 0 12px;
+      background: var(--rr-warn-soft);
+      border: 1px solid var(--rr-warn);
+      font-size: 0.9rem;
+    }
+    .brand-prompt {
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin: 8px 0 14px;
+      background: var(--rr-accent-soft);
+      border: 1px solid var(--rr-accent);
+      font-size: 0.9rem;
+    }
+    .tip-box {
+      border-radius: 8px;
+      padding: 8px 10px;
+      margin: 6px 0 12px;
+      background: #faf5fb;
+      border: 1px dashed var(--rr-border);
+      font-size: 0.9rem;
+      color: var(--rr-text-soft);
+    }
+    .section {
+      border-radius: 8px;
+      padding: 12px 12px 14px;
+      margin-bottom: 14px;
+      border: 1px solid var(--rr-border);
+      background: #fffefe;
+    }
+    label {
+      display: block;
+      margin: 5px 0 2px;
+      font-weight: 500;
+      font-size: 0.9rem;
+    }
+    .sub-label {
+      font-size: 0.8rem;
+      color: var(--rr-text-soft);
+      font-weight: 400;
+      margin-bottom: 4px;
+    }
+    input[type="number"], select, textarea {
+      width: 100%;
+      padding: 6px 7px;
+      border-radius: 5px;
+      border: 1px solid #d9c3ca;
+      font-size: 0.9rem;
+      box-sizing: border-box;
+      margin-bottom: 6px;
+      background: #fffdfd;
+    }
+    textarea {
+      min-height: 60px;
+      resize: vertical;
+    }
+    .pill-row {
+      margin: 4px 0 8px;
+      font-size: 0.8rem;
+      color: var(--rr-text-soft);
+    }
+    .pill {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      margin-right: 4px;
+      margin-bottom: 3px;
+      background: #f4e5ea;
+      color: var(--rr-text-main);
+    }
+    .btn {
+      padding: 8px 14px;
+      border-radius: 5px;
+      border: 1px solid var(--rr-accent);
+      background: var(--rr-accent);
+      color: #fff;
+      font-size: 0.9rem;
+      cursor: pointer;
+    }
+    .btn:hover {
+      background: #ad3e60;
+    }
+    .results {
+      margin-top: 10px;
+    }
+    .result-block {
+      border-radius: 8px;
+      padding: 10px 12px;
+      margin-top: 8px;
+      font-size: 0.9rem;
+      white-space: pre-line;
+    }
+    .tag {
+      font-size: 0.75rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.03em;
+      margin-bottom: 2px;
+      display: block;
+    }
+    .result-low {
+      background: var(--rr-safe-soft);
+      border: 1px solid var(--rr-safe);
+    }
+    .result-medium {
+      background: var(--rr-warn-soft);
+      border: 1px solid var(--rr-warn);
+    }
+    .result-high {
+      background: var(--rr-risk-soft);
+      border: 1px solid var(--rr-risk);
+    }
   </style>
 </head>
 <body>
+<div class="shell">
+  <span class="badge badge-lab">Rising Rose Lab</span>
+  <h1>Pricing Pressure & Discount Lab</h1>
+  <p class="sub-label">
+    This isn’t about fixing your character. It’s about mapping the conditions that make discounts feel “forced” before you ever get on the call.
+  </p>
 
-<h1>Pricing & Discount Pressure Checker</h1>
-<p class="note">
-  This helps you see why you feel pushed to discount and where that pressure is coming from: numbers, positioning, or nervous system.
-</p>
+  <div class="ready-alert">
+    <strong>Readiness check:</strong> If a 30–60 day revenue gap would force you to deplete savings, cash out personal investments again, drop critical safeguards (like insurance), or borrow just to keep the business moving, this lab is information only. It cannot replace individualized financial advice or emergency support.
+  </div>
 
-<div class="section">
-  <h2>1. Your offer & pipeline</h2>
+  <div class="brand-prompt">
+    <strong>Rising Rose prompt:</strong> Answer as the you‑who‑exists today, not the future you. This tool works best when you treat it like a lab notebook, not a report card.
+  </div>
 
-  <label for="price">Typical price you want to charge (USD)</label>
-  <input type="number" id="price" placeholder="e.g. 1500">
+  <div class="tip-box">
+    <strong>How this lab thinks about discounts:</strong> Buyers don’t introduce scarcity. They trigger the scarcity that already lives in your pipeline, positioning, money reality, and nervous system. We’re here to surface those conditions so you can change the system, not just brace harder in the moment.
+  </div>
 
-  <label for="minPrice">Absolute minimum you’ve accepted in the last 3 months (USD)</label>
-  <input type="number" id="minPrice" placeholder="e.g. 900">
+  <!-- SECTION 1: CURRENT PRICING REALITY -->
+  <div class="section">
+    <h2>1. Your current pricing reality</h2>
+    <p class="sub-label">Just this last 3–6 months. No aspirational pricing.</p>
 
-  <label for="inquiries">Average qualified inquiries per month</label>
-  <input type="number" id="inquiries" placeholder="e.g. 6">
+    <label for="priceSay">Price you say you charge (USD)</label>
+    <input type="number" id="priceSay" placeholder="e.g. 1500">
 
-  <label for="wins">Average new clients per month</label>
-  <input type="number" id="wins" placeholder="e.g. 3">
+    <label for="priceAvg">What clients actually pay on average (USD)</label>
+    <input type="number" id="priceAvg" placeholder="e.g. 1200">
 
-  <label for="catRisk">If you booked no new work for 60 days, how risky would that be?</label>
-  <select id="catRisk">
-    <option value="low">Low: it would be uncomfortable but not catastrophic</option>
-    <option value="medium">Medium: I’d have to make changes quickly</option>
-    <option value="high">High: bills / essentials would be at real risk</option>
-  </select>
-</div>
+    <label for="priceMin">Absolute minimum you went to (even if you regretted it) (USD)</label>
+    <input type="number" id="priceMin" placeholder="e.g. 750">
 
-<div class="section">
-  <h2>2. Scarcity & boundaries</h2>
+    <label for="inquiries">Qualified inquiries per month (people who fit and are genuinely interested)</label>
+    <input type="number" id="inquiries" placeholder="e.g. 6">
 
-  <label for="discountFreq">How often do you discount below your stated price?</label>
-  <select id="discountFreq">
-    <option value="rare">Rarely (0–10% of the time)</option>
-    <option value="sometimes">Sometimes (10–40% of the time)</option>
-    <option value="often">Often (40%+ of the time)</option>
-  </select>
+    <label for="wins">New clients per month</label>
+    <input type="number" id="wins" placeholder="e.g. 3">
 
-  <label for="discountReason">When you discount, what feels most true?</label>
-  <select id="discountReason">
-    <option value="relationship">I want to help this specific person</option>
-    <option value="fearLose">I’m afraid of losing the client</option>
-    <option value="pipeline">My pipeline is thin / I need the cash</option>
-    <option value="norms">“Everyone else” seems cheaper / market pressure</option>
-  </select>
+    <p class="pill-row">
+      <span class="pill">Benchmark: healthy pipeline ≈ 3x your monthly client goal</span>
+      <span class="pill">Benchmark: strategic discounting &lt; 15% of deals</span>
+    </p>
+  </div>
 
-  <label for="bodySignal">What does your body feel like when money comes up with a client?</label>
-  <select id="bodySignal">
-    <option value="steady">Mostly steady / grounded</option>
-    <option value="tight">Tight chest / shallow breathing / bracing</option>
-    <option value="freeze">Freeze / foggy / want to get off the call</option>
-  </select>
-</div>
+  <!-- SECTION 2: PRE-CONVERSATION STATE -->
+  <div class="section">
+    <h2>2. Your pre‑conversation state</h2>
+    <p class="sub-label">What’s already in the room before money even comes up.</p>
 
-<div class="section">
-  <h2>3. Positioning & “interchangeable” risk</h2>
+    <label for="preFeel">The hour before a pricing or sales conversation, I usually feel…</label>
+    <select id="preFeel">
+      <option value="calm">Mostly calm / grounded / curious</option>
+      <option value="anxious">Anxious / hoping they say yes</option>
+      <option value="desperate">Desperate / “this has to work”</option>
+    </select>
 
-  <label for="nicheClarity">How clearly can buyers tell you apart from others?</label>
-  <select id="nicheClarity">
-    <option value="clear">Very clear: people repeat my language back to me</option>
-    <option value="somewhat">Somewhat: they get it after I explain</option>
-    <option value="blurry">Blurry: I feel like a generalist / “like everyone else”</option>
-  </select>
+    <label for="bodySignal">When I imagine money coming up, my body feels…</label>
+    <select id="bodySignal">
+      <option value="steady">Steady / neutral</option>
+      <option value="tight">Tight / braced / shallow breathing</option>
+      <option value="fog">Foggy / frozen / checked out</option>
+    </select>
 
-  <label for="proofLevel">Current level of proof</label>
-  <select id="proofLevel">
-    <option value="strong">Strong: case studies, testimonials, repeat clients</option>
-    <option value="medium">Some: a few testimonials / referrals</option>
-    <option value="low">Low: very little social proof yet</option>
-  </select>
-</div>
+    <label for="catRisk">If I booked no new work for 60 days, I would likely have to…</label>
+    <select id="catRisk">
+      <option value="low">Tighten spending, but keep savings, safeguards, and operations intact</option>
+      <option value="medium">Tap some savings or delay non‑critical expenses</option>
+      <option value="high">Deplete savings, cash out investments again, drop safeguards like insurance, or borrow just to keep the business moving</option>
+    </select>
+  </div>
 
-<div class="section">
-  <button onclick="checkPricingPressure()">Check Discount Pressure</button>
+  <!-- SECTION 3: DISCOUNT PATTERNS -->
+  <div class="section">
+    <h2>3. Discount patterns in practice</h2>
 
-  <h2>Discount Pressure Level</h2>
-  <div id="pressureResult" class="result"></div>
+    <label for="discountFreq">How often do you go below your stated price?</label>
+    <select id="discountFreq">
+      <option value="rare">Rarely (0–10% of the time)</option>
+      <option value="sometimes">Sometimes (10–40% of the time)</option>
+      <option value="often">Often (40%+ of the time)</option>
+    </select>
 
-  <h2>What’s Driving It</h2>
-  <div id="driversResult" class="result"></div>
+    <label for="discountReason">When you drop your price, what feels most true in that moment?</label>
+    <select id="discountReason">
+      <option value="relationship">I genuinely want to help this specific person</option>
+      <option value="fearLose">I’m afraid of losing the client</option>
+      <option value="pipeline">My pipeline is thin / I need the cash</option>
+      <option value="norms">“Everyone else” seems cheaper / market pressure</option>
+    </select>
 
-  <h2>One Safe Next Step</h2>
-  <div id="stepResult" class="result"></div>
+    <label for="afterFeel">After you discount, you most often feel…</label>
+    <select id="afterFeel">
+      <option value="peace">At peace / glad I did it</option>
+      <option value="mixed">Mixed (relief + nagging resentment)</option>
+      <option value="regret">Regret / shame / “I betrayed myself”</option>
+    </select>
+  </div>
+
+  <!-- SECTION 4: MARKET & POSITIONING TRIGGERS -->
+  <div class="section">
+    <h2>4. Market & positioning triggers</h2>
+
+    <label for="nicheClarity">When buyers first find you, how clearly can they tell you apart?</label>
+    <select id="nicheClarity">
+      <option value="clear">Very clear: they repeat my language back to me</option>
+      <option value="somewhat">Somewhat: they get it after I explain</option>
+      <option value="blurry">Blurry: I feel like “one of many” in their eyes</option>
+    </select>
+
+    <label for="proofLevel">Current level of visible proof</label>
+    <select id="proofLevel">
+      <option value="strong">Strong: case studies, testimonials, repeat clients</option>
+      <option value="medium">Some: a few testimonials / informal proof</option>
+      <option value="low">Low: very little social proof yet</option>
+    </select>
+
+    <label for="pricePushback">How often do you hear price‑focused comments?</label>
+    <select id="pricePushback">
+      <option value="rarely">Rarely / never</option>
+      <option value="sometimes">Sometimes (“this is higher than I expected”)</option>
+      <option value="often">Often (“I found someone cheaper” / lots of quotes)</option>
+    </select>
+  </div>
+
+  <div class="section">
+    <button class="btn" onclick="runLab()">Run my lab results</button>
+
+    <div class="results">
+      <div id="pressureBlock" class="result-block">
+        <span class="tag">Discount pressure snapshot</span>
+      </div>
+      <div id="driversBlock" class="result-block">
+        <span class="tag">What’s already in the room before the call</span>
+      </div>
+      <div id="upstreamBlock" class="result-block">
+        <span class="tag">Upstream fixes (before the next sales call)</span>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-function checkPricingPressure() {
-  const price = parseFloat(document.getElementById('price').value || 0);
-  const minPrice = parseFloat(document.getElementById('minPrice').value || 0);
+function runLab() {
+  const priceSay = parseFloat(document.getElementById('priceSay').value || 0);
+  const priceAvg = parseFloat(document.getElementById('priceAvg').value || 0);
+  const priceMin = parseFloat(document.getElementById('priceMin').value || 0);
   const inquiries = parseFloat(document.getElementById('inquiries').value || 0);
   const wins = parseFloat(document.getElementById('wins').value || 0);
+
+  const preFeel = document.getElementById('preFeel').value;
+  const bodySignal = document.getElementById('bodySignal').value;
   const catRisk = document.getElementById('catRisk').value;
 
   const discountFreq = document.getElementById('discountFreq').value;
   const discountReason = document.getElementById('discountReason').value;
-  const bodySignal = document.getElementById('bodySignal').value;
+  const afterFeel = document.getElementById('afterFeel').value;
 
   const nicheClarity = document.getElementById('nicheClarity').value;
   const proofLevel = document.getElementById('proofLevel').value;
+  const pricePushback = document.getElementById('pricePushback').value;
 
-  const pressureResult = document.getElementById('pressureResult');
-  const driversResult = document.getElementById('driversResult');
-  const stepResult = document.getElementById('stepResult');
+  const pressureBlock = document.getElementById('pressureBlock');
+  const driversBlock = document.getElementById('driversBlock');
+  const upstreamBlock = document.getElementById('upstreamBlock');
 
-  [pressureResult, driversResult, stepResult].forEach(el => el.className = 'result');
+  [pressureBlock, driversBlock, upstreamBlock].forEach(el => {
+    el.className = 'result-block';
+  });
 
-  // Basic numbers
   const closeRate = inquiries > 0 ? (wins / inquiries) : 0;
-  const discountGap = price > 0 && minPrice > 0 ? (price - minPrice) / price : 0;
+  const discountGap = (priceSay > 0 && priceMin > 0) ? (priceSay - priceMin) / priceSay : 0;
 
-  // Pressure level
-  let pressureLevel = 'medium';
+  // DISCOUNT PRESSURE SNAPSHOT
+  let pressureLevel = 'result-medium';
   let pressureText = '';
 
-  if (discountFreq === 'rare' && catRisk === 'low' && (bodySignal === 'steady')) {
-    pressureLevel = 'low';
-    pressureText = 'Your current discount pressure looks low. You may still be making emotional decisions sometimes, but overall your pricing boundary is holding.';
-  } else if (discountFreq === 'often' || catRisk === 'high' || bodySignal === 'freeze') {
-    pressureLevel = 'high';
-    pressureText = 'Your system is under high pressure around pricing. Discounts are likely happening as a survival move, not a strategic choice.';
+  if (discountFreq === 'rare' && preFeel === 'calm' && catRisk === 'low' && bodySignal === 'steady') {
+    pressureLevel = 'result-low';
+    pressureText = 'Right now your discount pressure looks relatively low. You might still flex for specific people, but most of your pricing choices are coming from a grounded place, not panic.\n';
+  } else if (discountFreq === 'often' || catRisk === 'high' || preFeel === 'desperate' || bodySignal === 'fog') {
+    pressureLevel = 'result-high';
+    pressureText = 'Your system is carrying high discount pressure. By the time you reach the conversation, your nervous system already feels like the deal is “make or break,” so even small objections can feel like a threat.\n';
   } else {
-    pressureLevel = 'medium';
-    pressureText = 'You are carrying a moderate level of pressure. Sometimes you hold your line, sometimes scarcity wins. There is room to make this safer and clearer.';
+    pressureLevel = 'result-medium';
+    pressureText = 'You’re in a mixed zone. Some conversations feel solid; others tilt into “I hope they say yes.” Discounting isn’t constant, but it’s sitting close enough to the surface that the right trigger can bring it out.\n';
   }
 
-  // Adjust based on gap and close rate
-  if (discountGap > 0.4 && pressureLevel !== 'low') {
-    pressureLevel = 'high';
-    pressureText = 'Your lowest accepted price is far below your stated price. Combined with your other answers, this points to high discount pressure.';
-  }
-  if (closeRate < 0.2 && inquiries >= 5 && pressureLevel !== 'low') {
-    pressureText += '\n\nYour close rate is low compared to your inquiries. That often amplifies the feeling that you must discount to win any client.';
+  if (discountGap > 0.35 && pressureLevel !== 'result-low') {
+    pressureLevel = 'result-high';
+    pressureText += '\nThe gap between what you say you charge and what you’ve actually accepted is large. That suggests discounts are happening under significant pressure, not just as intentional generosity.\n';
   }
 
-  pressureResult.classList.add(pressureLevel);
+  if (closeRate < 0.2 && inquiries >= 5 && pressureLevel !== 'result-low') {
+    pressureText += '\nYour close rate is low compared to your number of qualified conversations. When wins feel rare, each new inquiry quietly becomes “last chance,” which amplifies discount pressure.\n';
+  }
 
-  pressureResult.textContent = pressureText;
+  pressureBlock.classList.add(pressureLevel);
+  pressureBlock.innerHTML = '<span class="tag">Discount pressure snapshot</span>' + pressureText.trim();
 
-  // Drivers
+  // WHAT'S ALREADY IN THE ROOM
   const drivers = [];
 
   if (catRisk === 'high') {
-    drivers.push('Catastrophe risk is real: a 60‑day gap in income would threaten essentials. In that state, discounting is often a rational safety decision, not a mindset flaw.');
+    drivers.push('Financial reality: A 60‑day gap would likely mean depleting savings, cashing out personal investments again, dropping safeguards like insurance, or borrowing for a quick cashflow patch. Your nervous system is not wrong to treat each opportunity like a safety decision. The scarcity you feel is real and pre‑existing, not introduced by the buyer.');
   } else if (catRisk === 'medium') {
-    drivers.push('There is meaningful risk if income slows. That background pressure makes it harder to say no or hold your price when scarcity gets triggered.');
+    drivers.push('Financial squeeze: A 60‑day gap would push you to tap savings or delay important expenses. That background strain quietly raises the stakes of every conversation before the buyer even speaks.');
   }
 
-  if (discountReason === 'pipeline' || inquiries < wins * 2) {
-    drivers.push('Your pipeline looks thin. When there are not enough qualified conversations, each one feels “last chance,” which fuels discounting.');
-  }
-
-  if (nicheClarity === 'blurry') {
-    drivers.push('Buyers may not clearly see how you differ from others, which pushes them toward price as the main decision tool and increases pressure on you to match or beat it.');
-  }
-
-  if (proofLevel === 'low') {
-    drivers.push('Low visible proof means you are doing more emotional and educational labor in each sale. That often shows up as over‑explaining and under‑charging.');
-  }
-
-  if (bodySignal !== 'steady') {
-    drivers.push('Your body is signaling stress when money comes up. That nervous system response matters; it is part of why pricing conversations feel like a cliff instead of a choice.');
-  }
-
-  if (drivers.length === 0) {
-    drivers.push('No major drivers popped from your answers. Stay curious: track your next 5 pricing decisions and note what was happening around you each time.');
-  }
-
-  driversResult.textContent = drivers.join('\n\n');
-
-  // Next step
-  let step = '';
-
-  if (catRisk === 'high') {
-    step = 'Your next step is safety: identify one fast, lower‑emotional‑load way to bring in cash (e.g., small, clear offer to existing warm contacts) so your nervous system is not making pricing decisions alone.';
-  } else if (discountFreq === 'often') {
-    step = 'For the next 30 days, choose a “do not go below” price that still feels survivable and track each time you are tempted to cross it. Write down the context instead of quietly lowering it.';
-  } else if (nicheClarity === 'blurry') {
-    step = 'Write one sentence that starts with “For [specific kind of person] who is dealing with [specific situation], I help them…” and use that in your next few conversations.';
-  } else {
-    step = 'Pick your next 3 sales conversations and decide your price and minimum before you get on the call. Put it in writing where you can see it while you talk.';
-  }
-
-  stepResult.classList.add(pressureLevel === 'high' ? 'high' : 'medium');
-  stepResult.textContent = step;
-}
-</script>
-
-</body>
-</html>
+  if (preFeel === 'anxious' || preFeel === 'desperate' || bodySignal !== 'steady') {
+    drivers.push('Nervous system: You’re walking into conversations already activated (anxious, braced, or foggy). In that state, even normal price questions can feel like danger, which makes “I had to disc
